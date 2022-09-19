@@ -56,3 +56,10 @@ dkms.conf
 
 # Local History for Visual Studio Code
 .history/
+
+# MacOS Cache 
+.DS_Store 
+   
+# Xmake cache 
+.xmake/ 
+build/ 
