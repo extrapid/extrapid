@@ -10,6 +10,12 @@ BindList_t *BindHead = NULL;
 ModuleType_t *ModuleHead = NULL;
 
 int M_LoadModules(const char *dir);
+BindList_t *M_GetBindList();
+
+BindList_t *M_GetBindList()
+{
+    return BindHead;
+}
 
 int M_LoadModules(const char *dir)
 {

@@ -43,7 +43,7 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
              1 + nowTime->tm_mon, nowTime->tm_mday, nowTime->tm_hour,
              nowTime->tm_min, nowTime->tm_sec);
 
-    char *logTimeLevelLib = {0};
+    char logTimeLevelLib[100] = {0};
     sprintf(logTimeLevelLib, "%s %s%-5s\033[0m[%s] ", timeString,
             levelColors[logLevel], levelStrings[logLevel], moduleName);
 
@@ -86,6 +86,6 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
 
 int main() {
     logInit();
-    log(LOG_WARN, "123", "");
+    log(LOG_WARN, "123", "hello");
     return 0;
 }

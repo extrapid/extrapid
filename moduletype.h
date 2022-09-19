@@ -23,7 +23,7 @@ typedef struct BINDLIST
     BindPort_t bindport;
     struct BINDLIST*next;
 } BindList_t;
-typedef struct MODULE
+typedef struct MODULET
 {
     long protocol;
     char *module_name;
@@ -31,7 +31,7 @@ typedef struct MODULE
     long version;
     funcs_t *start;
     BindList_t*bindlist_head;
-    struct MODULE*next;
+    struct MODULET*next;
 } ModuleType_t;
 
 #endif
