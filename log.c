@@ -21,7 +21,7 @@ void printInt(const int dec) {
 }
 
 void printStr(const char *ptr) {
-    while (*ptr) {
+    while (*ptr) {
 	buf[pos++] = *ptr;
 	ptr++;
     }
