@@ -12,5 +12,5 @@ void printInt(const int dec);
 void printStr(const char *ptr);
 
 
-void init(char *logPath = "/tmp/extrapid");
+void init(char *logPath);
 void log(const int logLevel, const char *moduleName, const char *fmt, ...);

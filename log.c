@@ -27,7 +27,7 @@ void printStr(const char *ptr) {
     }
 }
 
-void logInit(char *setLogPath = "/tmp/extrapid") {
+void logInit(char *setLogPath) {
     logPath = setLogPath;
     log(LOG_INFO, "libLog", "Init libLog");
 }

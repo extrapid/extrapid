@@ -4,5 +4,5 @@ add_defines("VERSION=\"v$(env VERSION)\"", "LOG_USE_COLOR")
 
 target("log")
     set_kind("shared")
-    add_files("log.cpp")
+    add_files("log.c")
 
