@@ -26,5 +26,6 @@ target("cJSON")
 
 target("extrapid")
     set_kind("binary")
+    add_deps("log", "deps")
     add_syslinks("pthread")
     add_files("main.cpp")
