@@ -22,7 +22,7 @@ jobs:
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential -y
 
       - name: Build with xmake
-        run: git fetch --depth=1000000 && version=$(git describe --tags) && version1=${version#v} && export VERSION=${version1%%-*} && xmake f --cc=gcc -y && xmake build -y
+        run: xmake f --cc=gcc -y && xmake build -y
       
   build-with-clang:
     strategy:
@@ -40,5 +40,5 @@ jobs:
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential clang -y
       
       - name: Build with xmake
-        run: git fetch --depth=1000000 && version=$(git describe --tags) && version1=${version#v} && export VERSION=${version1%%-*} && xmake f --cc=clang -y && xmake build -y
+        run: xmake f --cc=clang -y && xmake build -y
 
