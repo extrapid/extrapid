@@ -95,7 +95,3 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
 
     pthread_mutex_unlock(&lock);
 }
-<<<<<<< HEAD:log.c
-
-=======
->>>>>>> f0fdaae (基本完成主程序框架):log.cpp
