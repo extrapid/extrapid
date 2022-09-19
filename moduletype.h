@@ -29,7 +29,7 @@ typedef struct MODULET
     char *module_name;
     char *description;
     long version;
-    funcs_t *start;
+    funcs_t start;
     BindList_t*bindlist_head;
     struct MODULET*next;
 } ModuleType_t;

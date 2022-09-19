@@ -5,19 +5,24 @@
 #include <dirent.h>
 #include <dlfcn.h>
 #include <stdlib.h>
-funcs_t FuncHead = {0};
-BindList_t *BindHead = NULL;
-ModuleType_t *ModuleHead = NULL;
-
-int M_LoadModules(const char *dir);
-BindList_t *M_GetBindList();
-
-BindList_t *M_GetBindList()
+#include <list>
+#include <string>
+enum CallbackType
 {
-    return BindHead;
+    Start = 1,
+    BeforeThreadStart,
+    AfterThreadStart
+};
+Funcs* ModuleManager::GetFuncs()
+{
+    return &funcs;
+}
+std::list<BindList_t> ModuleManager::GetBinds()
+{
+    return binds;
 }
 
-int M_LoadModules(const char *dir)
+void ModuleManager::LoadModules(const char *dir)
 {
     printf("[log]设定的模块目录为%s\n", dir);
     printf("\n>>开始搜索目录<<\n");
@@ -25,7 +30,7 @@ int M_LoadModules(const char *dir)
     if (dp == NULL)
     {
         perror("[WARNING]目录打开失败");
-        return NULL;
+        return;
     }
     struct dirent *dir_entry = NULL;
     //获取，目录下有多少个文件
@@ -88,57 +93,82 @@ int M_LoadModules(const char *dir)
         {
 
             ModuleType_t md = init(1);
-            ModuleType_t *temp = (ModuleType_t *)malloc(sizeof(ModuleType_t));
-            *temp = md;
-            temp->next = ModuleHead;
-            ModuleHead = temp;
-            FunctionList_t *fctemp = md.start->start;
-            int funcnum=0;
+            modules.push_back(md);
+            FunctionList_t *fctemp = md.start.start;
+            int funcnum = 0;
             while (fctemp) //注册start函数列表
             {
-                FunctionList_t *fcstack = (FunctionList_t *)malloc(sizeof(FunctionList_t));
-                *fcstack = *fctemp;
-                fcstack->next = FuncHead.start;
-                FuncHead.start = fcstack;
+                funcs.start.push_back(*fctemp);
                 fctemp = fctemp->next;
-                funcnum+=1;
+                funcnum++;
             }
-            fctemp = md.start->before_connect_client;
+            fctemp = md.start.before_connect_client;
             while (fctemp) //注册before函数
             {
-                FunctionList_t *fcstack = (FunctionList_t *)malloc(sizeof(FunctionList_t));
-                *fcstack = *fctemp;
-                fcstack->next = FuncHead.before_connect_client;
-                FuncHead.before_connect_client = fcstack;
+                funcs.before_thread_start.push_back(*fctemp);
                 fctemp = fctemp->next;
-                funcnum+=1;
+                funcnum++;
             }
-            fctemp = md.start->after_connect_client;
+            fctemp = md.start.after_connect_client;
             while (fctemp) //注册after函数
             {
-                FunctionList_t *fcstack = (FunctionList_t *)malloc(sizeof(FunctionList_t));
-                *fcstack = *fctemp;
-                fcstack->next = FuncHead.before_connect_client;
-                FuncHead.before_connect_client = fcstack;
+                funcs.before_thread_start.push_back(*fctemp);
                 fctemp = fctemp->next;
-                funcnum+=1;
+                funcnum++;
             }
             //注册端口回调
             BindList_t *bltemp = md.bindlist_head;
             BindList_t *blstack;
-            int blnum=0;
+            int blnum = 0;
             while (bltemp)
             {
-                blstack=(BindList_t*)malloc(sizeof(BindList_t));
-                *blstack = *bltemp;
-                blstack->next=BindHead;
-                BindHead=blstack;
-                bltemp=bltemp->next;
-                blnum+=1;
+                binds.push_back(*bltemp);
+                bltemp = bltemp->next;
+                blnum += 1;
             }
-            printf("模块%s注册成功，包含%d个函数，需要%d个端口\n",filenames[i],funcnum,blnum);
+            printf("模块%s注册成功，包含%d个函数，需要%d个端口\n", filenames[i], funcnum, blnum);
         }
     }
+    auto compare_func=[](FunctionList_t a, FunctionList_t b)
+                    { return a.precedence < b.precedence; };
+
+    funcs.start.sort(compare_func);
+    funcs.before_thread_start.sort(compare_func);
+    funcs.after_thread_start.sort(compare_func);
+    
     putchar('\n');
-    return 0;
+
+    return;
+}
+void ModuleManager::runStart()
+{
+    typedef void (*f)(void);
+    for (auto it:funcs.start)
+    {
+        ((f)it.func)();
+    }
+}
+void ModuleManager::runBeforeThreadStared(int sock,struct sockaddr addr)
+{
+    typedef void (*f)(int,struct sockaddr);
+    for (auto it:funcs.before_thread_start)
+    {
+        ((f)it.func)(sock,addr);
+    }
+}
+void ModuleManager::runAfterThreadStared(int sock,struct sockaddr addr,pthread_t tid)
+{
+    typedef void (*f)(int,struct sockaddr,pthread_t);
+    for (auto it:funcs.before_thread_start)
+    {
+        ((f)it.func)(sock,addr,tid);
+    }
+}
+
+
+ModuleManager modules;
+ModuleManager *ManageModules();
+ModuleManager *ManageModules()
+{
+    return &modules;
 }
