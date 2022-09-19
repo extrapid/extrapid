@@ -96,8 +96,3 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
     pthread_mutex_unlock(&lock);
 }
 
-int main() {
-    logInit(".");
-    log(LOG_WARN, "123", "hello");
-    return 0;
-}
