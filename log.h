@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <errno.h>
 #include <time.h>
 
 enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
@@ -12,4 +13,4 @@ void printStr(const char *ptr);
 
 
 void init(char *logPath = "/tmp/extrapid");
-void log(const int logLevel, const char *moduleName, const char *format, ...);
+void log(const int logLevel, const char *moduleName, const char *fmt, ...);
