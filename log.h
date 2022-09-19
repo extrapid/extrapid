@@ -12,5 +12,5 @@ void printInt(const int dec);
 void printStr(const char *ptr);
 
 
-void init(char *logPath);
+void logInit(char *logPath);
 void log(const int logLevel, const char *moduleName, const char *fmt, ...);

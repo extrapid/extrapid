@@ -87,8 +87,8 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
     printf("%s%s\n", logTimeLevelLib, buf);
     
     FILE *fp;
-    char fileName[14];
-    snprintf(fileName, 14, "%d-%d-%d.log", 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday);
+    char fileName[1024];
+    sprintf(fileName, "%s/%d-%d-%d.log",logPath , 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday);
     if((fp = fopen(fileName, "a")) == NULL)
 	printf("%s%s\n", logTimeLevelLib, strerror(errno));
     fprintf(fp, "%s%s\n", logTimeLevelLib, buf);
