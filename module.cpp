@@ -44,7 +44,7 @@ void ModuleManager::LoadModules(const char *dir)
             break;
         }
         extrapidLog(LOG_INFO, "LoadModules", "发现文件%s", dir_entry->d_name);
-        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_"))
+        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_module_"))
         {
             
 	    extrapidLog(LOG_INFO, "LoadModules", "找到模块:%s", dir_entry->d_name);
@@ -64,7 +64,7 @@ void ModuleManager::LoadModules(const char *dir)
         {
             break;
         }
-        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_"))
+        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_module_"))
         {
             strcpy(filenames[i], dir_entry->d_name);
             i++;
