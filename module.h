@@ -21,6 +21,7 @@ typedef class MODULEMANAGER{
     void runStart();
     void runBeforeThreadStared(int sock,struct sockaddr);
     void runAfterThreadStared(int sock,struct sockaddr,pthread_t);
+    void ListModules();
 } ModuleManager;
 ModuleManager* ManageModules();
 typedef void (*CallbackStart)(void);

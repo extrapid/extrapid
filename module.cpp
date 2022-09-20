@@ -164,7 +164,15 @@ void ModuleManager::runAfterThreadStared(int sock,struct sockaddr addr,pthread_t
         ((f)it.func)(sock,addr,tid);
     }
 }
-
+void ModuleManager::ListModules()
+{
+    printf("========列出模块列表========\n");
+    for (auto it :modules)
+    {
+        printf("%s\n",it.module_name);
+    }
+    printf("==========列出完成==========\n");
+}
 
 ModuleManager modules;
 ModuleManager *ManageModules();
