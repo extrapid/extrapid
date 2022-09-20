@@ -4,35 +4,12 @@
 #include <unistd.h>
 char *logPath;
 char buf[1024];
-int pos = 0;
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 static const char *levelColors[] = {"\033[94m", "\033[36m", "\033[32m", "\033[33m", "\033[31m", "\033[35m", "\033[35m"};
 
 static const char *levelStrings[] = {"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
-
-void printChar(const char ch)
-{
-    buf[pos++] = ch;
-}
-
-void printInt(const int dec)
-{
-    if (dec == 0)
-        return;
-    printInt(dec / 10);
-    buf[pos++] = (char)(dec % 10 + '0');
-}
-
-void printStr(const char *ptr)
-{
-    while (*ptr)
-    {
-        buf[pos++] = *ptr;
-        ptr++;
-    }
-}
 
 void logInit(const char *setLogPath)
 {
@@ -68,51 +45,10 @@ void extrapidLog(const int logLevel, const char *moduleName, const char *fmt, ..
     sprintf(logToFile, "%s %-5s[%s] ", timeString, levelStrings[logLevel], moduleName);
 
     memset(buf, 0, sizeof(buf));
-    pos = 0;
 
     va_list ap;
     va_start(ap, fmt);
-    while (*fmt)
-    {
-        if (*fmt != '%')
-        {
-            buf[pos++] = *fmt;
-            fmt++;
-        }
-        else
-        {
-            fmt++;
-            switch (*fmt)
-            {
-            case 'c':
-            {
-                char valChar = va_arg(ap, int);
-                printChar(valChar);
-                fmt++;
-                break;
-            }
-            case 'd':
-            {
-                int valInt = va_arg(ap, int);
-                printInt(valInt);
-                fmt++;
-                break;
-            }
-            case 's':
-            {
-                char *valStr = va_arg(ap, char *);
-                printStr(valStr);
-                fmt++;
-                break;
-            }
-            default:
-            {
-                printChar(*fmt);
-                fmt++;
-            }
-            }
-        }
-    }
+    vsprintf(buf, fmt, ap);
     va_end(ap);
 
     printf("%s%s\n", logTimeLevelLib, buf);
