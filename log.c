@@ -41,7 +41,7 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
     nowTime = localtime(&timep);
 
     char timeString[22] = {0};
-    snprintf(timeString, 22, "[%d-%d-%d_%d:%d:%d]", 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday, nowTime->tm_hour, nowTime->tm_min, nowTime->tm_sec);
+    snprintf(timeString, 22, "[%d-%s%d-%s%d_%s%d:%s%d:%s%d]", 1900 + nowTime->tm_year, nowTime->tm_mon<9?"0":"", 1 + nowTime->tm_mon, nowTime->tm_mday<10?"0":"", nowTime->tm_mday, nowTime->tm_hour<10?"0":"", nowTime->tm_hour, nowTime->tm_min<10?"0":"", nowTime->tm_min, nowTime->tm_sec<10?"0":"", nowTime->tm_sec);
 
     char logTimeLevelLib[128] = {0};
     sprintf(logTimeLevelLib, "%s %s%-5s\033[0m[%s] ", timeString, levelColors[logLevel], levelStrings[logLevel], moduleName);
