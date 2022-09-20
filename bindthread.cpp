@@ -73,7 +73,9 @@ void StartThread()
         pthread_t tid;
         struct CONNECT*c=(struct CONNECT*)malloc(sizeof(struct CONNECT));
         memset(c,0,sizeof(struct CONNECT));
+        int opt=1;
         c->sock=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
+        setsockopt(c->sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); 
         if ( 0>c->sock)
         {
             extrapidLog(LOG_ERROR, "SOCKET", "套接字创建失败:%s",strerror(errno));

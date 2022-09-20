@@ -63,3 +63,10 @@ dkms.conf
 # Xmake cache 
 .xmake/ 
 build/ 
+
+# config dir
+conf
+
+#log dir
+log
+logs
