@@ -1,17 +1,18 @@
 #include "module.h"
-#include<pthread.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<sys/socket.h>
-#include<sys/types.h>
-#include<unistd.h>
-#include<netdb.h>
-#include<string.h>
-#include<errno.h>
-#include<arpa/inet.h>
-#include<sys/ioctl.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <string.h>
+#include <errno.h>
+#include <arpa/inet.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
-#include<list>
+#include <list>
+#include "log.h"
 struct CONNECT{
     int sock;
     struct sockaddr addr;
@@ -42,7 +43,7 @@ void*thread(void*argv)
         if (temp->sock==-1)
         {
             //建立连接失败
-            printf("[ERROR] 建立连接失败:%s\n",strerror(errno));
+            extrapidLog(LOG_ERROR, "SOCKET", "建立连接失败:%s",strerror(errno));
             free(temp);
             continue;
         }
@@ -53,7 +54,7 @@ void*thread(void*argv)
         temp->bindlist=c.bindlist;
         if (0!=pthread_create(&tid,NULL,DealClient,temp))
         {
-            printf("[ERROR] 客户端处理线程创建失败\n");
+            extrapidLog(LOG_ERROR, "SOCKET", "客户端处理线程创建失败");
             close(temp->sock);
             free(temp);
             continue;
@@ -75,7 +76,7 @@ void StartThread()
         c->sock=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
         if ( 0>c->sock)
         {
-            printf("[ERROR] 套接字创建失败:%s\n",strerror(errno));
+            extrapidLog(LOG_ERROR, "SOCKET", "套接字创建失败:%s",strerror(errno));
             exit(1);
         }
         struct sockaddr_in addrin={0};
@@ -84,13 +85,13 @@ void StartThread()
         addrin.sin_port=htons(it.bindport.port);
         if (bind(c->sock,(struct sockaddr*)(&addrin),sizeof(addrin))<0)
         {
-            printf("[ERROR] 套接字绑定失败:%s\n",strerror(errno));
+            extrapidLog(LOG_ERROR, "SOCKET", "套接字绑定失败:%s",strerror(errno));
             exit(1);
         }
         c->bindlist=it;
         if (0!=pthread_create(&tid,NULL,thread,c))
         {
-            printf("[ERROR] 创建监听线程失败\n");
+            extrapidLog(LOG_ERROR, "SOCKET", "创建监听线程失败");
             free(c);
             exit(1);
         }

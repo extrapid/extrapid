@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <list>
 #include <string>
+#include "log.h"
 enum CallbackType
 {
     Start = 1,
@@ -24,12 +25,12 @@ std::list<BindList_t> ModuleManager::GetBinds()
 
 void ModuleManager::LoadModules(const char *dir)
 {
-    printf("[log]设定的模块目录为%s\n", dir);
+    extrapidLog(LOG_INFO, "LoadModules", "设定的模块目录为%s\n", dir);
     printf("\n>>开始搜索目录<<\n");
     DIR *dp = opendir(dir);
     if (dp == NULL)
     {
-        perror("[WARNING]目录打开失败");
+        extrapidLog(LOG_ERROR, "LoadModules", "目录打开失败");
         return;
     }
     struct dirent *dir_entry = NULL;
@@ -42,10 +43,11 @@ void ModuleManager::LoadModules(const char *dir)
         {
             break;
         }
-        printf("[log]发现文件%s\n", dir_entry->d_name);
+        extrapidLog(LOG_INFO, "LoadModules", "发现文件%s", dir_entry->d_name);
         if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_"))
         {
-            printf("[log]找到模块:%s\n", dir_entry->d_name);
+            
+	    extrapidLog(LOG_INFO, "LoadModules", "找到模块:%s", dir_entry->d_name);
             filenum++;
         }
     }
@@ -80,13 +82,13 @@ void ModuleManager::LoadModules(const char *dir)
         void *lib = dlopen(strtemp, RTLD_LAZY);
         if (lib == NULL)
         {
-            printf("[WARNING]打开%s错误,错误原因是:%s\n", strtemp, dlerror());
+            extrapidLog(LOG_ERROR, "LoadModules", "打开%s错误,错误原因是:%s", strtemp, dlerror());
             continue;
         }
         _init_ init = (_init_)dlsym(lib, "_init_");
         if (init == NULL)
         {
-            printf("[WARNING] 模块:%s无法注册，原因是%s，你可以尝试与开发者联系\n", filenames[i], dlerror());
+            extrapidLog(LOG_WARN, "LoadModules", "模块:%s无法注册，原因是%s，你可以尝试与开发者联系", filenames[i], dlerror());
             dlclose(lib);
         }
         else
@@ -126,7 +128,7 @@ void ModuleManager::LoadModules(const char *dir)
                 bltemp = bltemp->next;
                 blnum += 1;
             }
-            printf("模块%s注册成功，包含%d个函数，需要%d个端口\n", filenames[i], funcnum, blnum);
+            extrapidLog(LOG_INFO, "LoadModules", "模块%s注册成功，包含%d个函数，需要%d个端口\n", filenames[i], funcnum, blnum);
         }
     }
     auto compare_func=[](FunctionList_t a, FunctionList_t b)
