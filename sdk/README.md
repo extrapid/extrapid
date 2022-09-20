@@ -107,3 +107,12 @@ SDK_AddFunction(&mod,RUN_AT_BEFORE_THREAD_START,func,10);
 
 ## 3.模块开发示例
 详见example.c
+
+## 4.如何编译  
+按照标准的动态链接库的方式编译即可，编译时加入SDK中的源文件`modulesdk.c`  
+**要求模块名称必须以.so结尾，否则不会被认为是模块**  
+示例:  
+```bash
+#假设编写的模块源码为a.c,生成的模块名为a.so
+gcc a.c modulesdk.c -shared -fPIC -o a.so
+```
