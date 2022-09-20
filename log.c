@@ -29,7 +29,9 @@ void printStr(const char *ptr) {
 
 void logInit(char *setLogPath) {
     logPath = setLogPath;
-    mkdir(logPath, S_IRWXU);
+    if (mkdir(logPath, S_IRWXU) == -1) {
+	printf("%s\n", strerror(errno));
+    }
     extrapidLog(LOG_INFO, "libLog", "Init libLog");
 }
 
