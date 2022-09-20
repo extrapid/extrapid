@@ -29,10 +29,11 @@ void printStr(const char *ptr) {
 
 void logInit(char *setLogPath) {
     logPath = setLogPath;
-    log(LOG_INFO, "libLog", "Init libLog");
+    mkdir(logPath, S_IRWXU);
+    extrapidLog(LOG_INFO, "libLog", "Init libLog");
 }
 
-void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
+void extrapidLog(const int logLevel, const char *moduleName, const char *fmt, ...) {
     pthread_mutex_lock(&lock);
 
     time_t timep;
@@ -44,7 +45,9 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
     snprintf(timeString, 22, "[%d-%s%d-%s%d_%s%d:%s%d:%s%d]", 1900 + nowTime->tm_year, nowTime->tm_mon<9?"0":"", 1 + nowTime->tm_mon, nowTime->tm_mday<10?"0":"", nowTime->tm_mday, nowTime->tm_hour<10?"0":"", nowTime->tm_hour, nowTime->tm_min<10?"0":"", nowTime->tm_min, nowTime->tm_sec<10?"0":"", nowTime->tm_sec);
 
     char logTimeLevelLib[128] = {0};
+    char logToFile[128] = {0};
     sprintf(logTimeLevelLib, "%s %s%-5s\033[0m[%s] ", timeString, levelColors[logLevel], levelStrings[logLevel], moduleName);
+    sprintf(logToFile, "%s %-5s[%s] ", timeString, levelStrings[logLevel], moduleName);
 
     memset(buf,0,sizeof(buf));pos=0;
 
@@ -91,7 +94,8 @@ void log(const int logLevel, const char *moduleName, const char *fmt, ...) {
     sprintf(fileName, "%s/%d-%d-%d.log",logPath , 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday);
     if((fp = fopen(fileName, "a")) == NULL)
 	printf("%s%s\n", logTimeLevelLib, strerror(errno));
-    fprintf(fp, "%s%s\n", logTimeLevelLib, buf);
+    fprintf(fp, "%s%s\n", logToFile, buf);
+    fclose(fp);
 
     pthread_mutex_unlock(&lock);
 }

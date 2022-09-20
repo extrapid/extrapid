@@ -43,7 +43,7 @@ void ModuleManager::LoadModules(const char *dir)
             break;
         }
         printf("[log]发现文件%s\n", dir_entry->d_name);
-        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so"))
+        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_"))
         {
             printf("[log]找到模块:%s\n", dir_entry->d_name);
             filenum++;
@@ -62,7 +62,7 @@ void ModuleManager::LoadModules(const char *dir)
         {
             break;
         }
-        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so"))
+        if (dir_entry->d_type == 8 && strstr(dir_entry->d_name, ".so") && strstr(dir_entry->d_name, "etp_"))
         {
             strcpy(filenames[i], dir_entry->d_name);
             i++;

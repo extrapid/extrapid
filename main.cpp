@@ -10,8 +10,8 @@ void StartThread();
 int main()
 {
     
-    logInit("./log/");
-    log(LOG_INFO,"MAIN","开始加载模块");
+    logInit("./log");
+    extrapidLog(LOG_INFO,"MAIN","开始加载模块");
     auto modules=ManageModules();
     modules->LoadModules(".");
     modules->runStart();
