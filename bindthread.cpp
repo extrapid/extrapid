@@ -47,8 +47,7 @@ void*thread(void*argv)
             continue;
         }
         //在这里模块处理连接
-
-        //
+        ManageModules()->runBeforeThreadStared(temp->sock,temp->addr);
         //创建新线程运行回调函数
         pthread_t tid;
         temp->bindlist=c.bindlist;
@@ -59,8 +58,8 @@ void*thread(void*argv)
             free(temp);
             continue;
         }
+        ManageModules()->runAfterThreadStared(temp->sock,temp->addr,tid);
         pthread_detach(tid);
-
     }
     
 
@@ -89,7 +88,7 @@ void StartThread()
             exit(1);
         }
         c->bindlist=it;
-        if (0!=pthread_create(&tid,NULL,thread,&c))
+        if (0!=pthread_create(&tid,NULL,thread,c))
         {
             printf("[ERROR] 创建监听线程失败\n");
             free(c);
