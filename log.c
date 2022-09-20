@@ -27,7 +27,7 @@ void printStr(const char *ptr) {
     }
 }
 
-void logInit(char *setLogPath) {
+void logInit(const char *setLogPath) {
     logPath = setLogPath;
     if (mkdir(logPath, S_IRWXU) == -1) {
 	printf("%s\n", strerror(errno));
@@ -93,7 +93,7 @@ void extrapidLog(const int logLevel, const char *moduleName, const char *fmt, ..
     
     FILE *fp;
     char fileName[1024];
-    sprintf(fileName, "%s/%d-%d-%d.log",logPath , 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday);
+    sprintf(fileName, "%s/%d-%d-%d.log", logPath, 1900 + nowTime->tm_year, 1 + nowTime->tm_mon, nowTime->tm_mday);
     if((fp = fopen(fileName, "a")) == NULL)
 	printf("%s%s\n", logTimeLevelLib, strerror(errno));
     fprintf(fp, "%s%s\n", logToFile, buf);
