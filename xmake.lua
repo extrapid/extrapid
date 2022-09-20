@@ -34,3 +34,5 @@ target("extrapid")
     add_rpathdirs("@loader_path/lib")
     add_files("main.cpp")
     on_install(function (target)                         end)                                                 on_uninstall(function (target)                       end)
+
+includes("modules/*")

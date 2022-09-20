@@ -1,0 +1,3 @@
+[submodule "modules/etp_module_http"]
+	path = modules/etp_module_http
+	url = https://github.com/extrapid/etp_module_http.git

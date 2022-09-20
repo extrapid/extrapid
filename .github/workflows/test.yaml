@@ -9,7 +9,7 @@ jobs:
   build-with-gcc:
     strategy:
       matrix:
-        os: [ubuntu-18.04 ,ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -21,13 +21,16 @@ jobs:
       - name: Install deps
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential -y
 
+      - name: Pull submodule
+        run: git submodule update --init --recursive
+
       - name: Build with xmake
-        run: xmake f --cc=gcc -y && xmake build -y
+        run: xmake f --cc=gcc --cxx=g++ -y && xmake build -y
       
   build-with-clang:
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -38,7 +41,10 @@ jobs:
       
       - name: Install deps
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential clang -y
-      
+
+      - name: Pull submodule
+        run: git submodule update --init --recursive
+
       - name: Build with xmake
-        run: xmake f --cc=clang -y && xmake build -y
+        run: xmake f --cc=clang --cxx=clang++ -y && xmake build -y
 
