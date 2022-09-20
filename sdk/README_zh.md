@@ -57,7 +57,9 @@ void SDK_AddBindPort(ModuleType_t*mod,int port,void (*callback)(int sock,struct 
 函数作用：申请一个端口，并为该端口上的发生的连接设置回调函数处理  
   
 函数用法：传入需要监听的端口，并传入处理连接的回调函数  
-  
+
+**提示：绑定端口的回调函数中的套接字参数，必须在回调函数中自行关闭，框架不会关闭**，见下文示例中的`close(sock);`
+
 示例:
 ```C
 //回调函数
