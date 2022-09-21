@@ -21,6 +21,9 @@ jobs:
       - name: Install deps
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential -y
 
+      - name: Pull submodules
+        run: git submodule foreach 'git pull'
+
       - name: Build with xmake
         run: xmake f --cc=gcc --cxx=g++ -y && xmake build -y
       
@@ -38,6 +41,9 @@ jobs:
       
       - name: Install deps
         run: sudo apt update && sudo apt-get install manpages-posix-dev glibc-doc manpages-posix build-essential clang -y
+
+      - name: Pull submodules
+        run: git submodule foreach 'git pull'
       
       - name: Build with xmake
         run: xmake f --cc=clang --cxx=clang++ -y && xmake build -y
