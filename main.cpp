@@ -11,12 +11,16 @@
 void StartThread();
 char *LogFilePath = NULL;
 char *ModuleFilePath = NULL;
+void *RunBackground(void *a);
 
 void LoadConfig();
 int main()
 {
 
     LoadConfig();
+    pthread_t tid;
+    pthread_create(&tid, NULL, RunBackground, NULL);
+    pthread_detach(tid);
     logInit(LogFilePath);
     extrapidLog(LOG_INFO, "MAIN", "开始加载模块");
     auto modules = ManageModules();
@@ -46,7 +50,7 @@ void LoadConfig()
         cJSON_AddStringToObject(json, "LogPath", "./logs");
         cJSON_AddStringToObject(json, "ModulePath", "Modules");
         char *p = cJSON_Print(json);
-        fwrite(p, strlen(p) + 1, 1, fp);
+        fwrite(p, strlen(p), 1, fp);
         fclose(fp);
         cJSON_Delete(json);
         printf("配置文件conf/config.json创建完成\n");
@@ -139,4 +143,56 @@ int folder_mkdirs(char *folder_path)
         }
     }
     return 0;
+}
+
+void *RunBackground(void *a)
+{
+    char *rawstr = (char *)malloc(1024 * 10);
+    int argc;
+    while (1)
+    {
+        argc = 0;
+        fgets(rawstr, 1024 * 10, stdin);
+        char **argv = (char **)malloc(1024 * 10 * sizeof(char **));
+        memset(argv, 0, 1024 * 10 * sizeof(char **));
+        int s = 0;
+        char state = 1;
+        for (int i = 0; i < 1024 * 10 && rawstr[i] != 0; i += 1)
+        {
+            if (rawstr[i] == '\n')
+            {
+                rawstr[i] = 0;
+                break;
+            }
+            if (rawstr[i] != ' ' && state == 1)
+            {
+                argv[s] = rawstr + i;
+                argc += 1;
+                state = 0;
+                s += 1;
+            }
+            if (rawstr[i] == ' ' && state == 0)
+            {
+                rawstr[i] = 0;
+                state = 1;
+            }
+        }
+        if (argc == 0)
+            continue;
+        //检查事件处理程序
+        if (!strcmp(argv[0], "help"))
+        {
+            printf("输入stop关闭服务器\n");
+        }
+        else if (!strcmp(argv[0], "stop"))
+        {
+            extrapidLog(LOG_INFO, "MAIN", "退出服务器");
+            exit(0);
+        }
+        else
+        {
+            printf("未知指令\n");
+        }
+        free(argv);
+    }
 }
