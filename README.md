@@ -19,4 +19,4 @@ ModulePath指示模块存放目录
 ## 如何编译本程序
 克隆本仓库，在包含Makefile的目录下输入`make`即可编译，生成的文件在当前目录。也可以使用`xmake`命令编译  
 ## 如何开发模块
-开发模块详情请看[SDK文档](https://github.com/extrapid/extrapid/blob/main/sdk/README_zh.md "SDK文档")页面。
+开发模块详情请看[SDK文档](https://github.com/extrapid/etp_sdk/blob/main/README_zh.md "SDK文档")页面。
