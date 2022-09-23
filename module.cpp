@@ -26,18 +26,12 @@ std::list<BindList_t> ModuleManager::GetBinds()
 void ModuleManager::LoadModules(const char *dir)
 {
     extrapidLog(LOG_INFO, "LoadModules", "设定的模块目录为%s\n", dir);
-    printf(">>开始搜索目录<<\n");
+    printf("\n>>开始搜索目录<<\n");
     DIR *dp = opendir(dir);
     if (dp == NULL)
     {
-        extrapidLog(LOG_ERROR, "LoadModules", "目录打开失败,尝试创建目录");
-        mkdir(dir,0777);
-        dp = opendir(dir);
-        if (dir==NULL)
-        {
-            extrapidLog(LOG_ERROR, "LoadModules", "目录创建失败");
-            return;
-        }
+        extrapidLog(LOG_ERROR, "LoadModules", "目录打开失败");
+        return;
     }
     struct dirent *dir_entry = NULL;
     //获取，目录下有多少个文件
@@ -77,13 +71,8 @@ void ModuleManager::LoadModules(const char *dir)
         }
     }
     closedir(dp);
-    printf(">>目录搜索完成<<\n");
+
     //尝试注册并尝试创建链表
-    if (filenum==0)
-    {
-        extrapidLog(LOG_INFO,"LoadModules","没有找到模块");
-        return;
-    }
     printf("\n>>开始注册模块<<\n");
     typedef ModuleType_t (*_init_)(int);
     char strtemp[256];
@@ -148,7 +137,8 @@ void ModuleManager::LoadModules(const char *dir)
     funcs.start.sort(compare_func);
     funcs.before_thread_start.sort(compare_func);
     funcs.after_thread_start.sort(compare_func);
-    printf(">>模块注册完成<<\n");
+    
+    putchar('\n');
 
     return;
 }

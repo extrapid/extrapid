@@ -35,7 +35,6 @@
 *.i*86
 *.x86_64
 *.hex
-extrapid
 
 # Debug files
 *.dSYM/
