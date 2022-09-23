@@ -28,9 +28,11 @@ target("cJSON")
 
 target("extrapid")
     set_kind("binary")
-    add_deps("log", "deps")
+    add_deps("log", "deps", "cJSON")
     add_syslinks("pthread")
     add_linkdirs("$(buildir)/")
     add_rpathdirs("@loader_path/lib")
     add_files("main.cpp")
     on_install(function (target)                         end)                                                 on_uninstall(function (target)                       end)
+
+includes("modules/*")

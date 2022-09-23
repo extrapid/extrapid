@@ -1,3 +1,5 @@
+#ifndef LOG_H
+#define LOG_H
 #include <pthread.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -16,8 +18,9 @@ void printStr(const char *ptr);
 #ifdef __cplusplus
 extern "C"{
 #endif
-void logInit(char *logPath);
+void logInit(const char *logPath);
 void extrapidLog(const int logLevel, const char *moduleName, const char *fmt, ...);
 #ifdef __cplusplus
 }
+#endif
 #endif
