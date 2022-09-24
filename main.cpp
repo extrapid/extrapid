@@ -5,7 +5,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <list>
-#include "log.h"
+#include "etp_log/log.h"
 #include "cJSON.h"
 #include <unistd.h>
 void StartThread();
