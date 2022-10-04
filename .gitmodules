@@ -4,3 +4,6 @@
 [submodule "modules/etp_module_rtmp"]
 	path = modules/etp_module_rtmp
 	url = https://github.com/extrapid/etp_module_rtmp.git
+[submodule "etp_log"]
+	path = etp_log
+	url = https://github.com/extrapid/etp_log
